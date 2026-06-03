@@ -29,12 +29,12 @@ export async function getFolders() {
 export async function getFolderByIdIncludingFiles(id) {
   const sql = `
     SELECT
-    *,
-    (
+      *,
+      (  
         SELECT json_agg(files)
         FROM files
         WHERE files.folder_id = folders.id
-        ) as files
+      ) as files
     FROM folders
     WHERE id = $1
     `;
