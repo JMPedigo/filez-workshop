@@ -22,3 +22,24 @@ export async function getFolders() {
   const { rows: folders } = await db.query(sql);
   return folders;
 }
+/** getFolderByIdIncludingFiles
+ * sends 404 error if folder doesn't exist
+ * sends folder specified by id...
+ * including an array of all files in that folder*/
+export async function getFolderByIdIncludingFiles(id) {
+  const sql = `
+    SELECT
+    *,
+    (
+        SELECT json_agg(files)
+        FROM files
+        WHERE files.folder_id = folders.id
+        ) as files
+    FROM folders
+    WHERE id = $1
+    `;
+  const {
+    rows: [folder],
+  } = await db.query(sql, [id]);
+  return folder;
+}
